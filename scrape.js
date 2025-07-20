@@ -1,29 +1,34 @@
 const { chromium } = require('playwright');
 
-const seeds = Array.from({ length: 10 }, (_, i) => 32 + i);
+const seeds = Array.from({ length: 41 - 32 + 1 }, (_, i) => 32 + i);
+const urls = seeds.map(seed => `https://sanand0.github.io/tdsdata/js_table/?seed=${seed}`);
 
 (async () => {
     const browser = await chromium.launch();
     const page = await browser.newPage();
+
     let grandTotal = 0;
 
-    for (const seed of seeds) {
-        const url = `https://internal-web-qa.datadash.in/sum-tables/seed-${seed}`;
+    for (const url of urls) {
         await page.goto(url);
+        console.log(`Processing ${url}...`);
 
-        const numbers = await page.$$eval('table', tables => {
-            return tables.flatMap(table =>
-                Array.from(table.querySelectorAll('td'))
-                    .map(td => parseFloat(td.textContent.trim()))
-                    .filter(num => !isNaN(num))
-            );
+        const sum = await page.$$eval('table', tables => {
+            let pageTotal = 0;
+            tables.forEach(table => {
+                table.querySelectorAll('td').forEach(cell => {
+                    const num = parseFloat(cell.textContent.replace(/[^0-9.\-]+/g, ''));
+                    if (!isNaN(num)) pageTotal += num;
+                });
+            });
+            return pageTotal;
         });
 
-        const seedSum = numbers.reduce((a, b) => a + b, 0);
-        console.log(`Seed ${seed}: ${seedSum}`);
-        grandTotal += seedSum;
+        console.log(`Sum at ${url}: ${sum}`);
+        grandTotal += sum;
     }
 
     console.log(`Grand Total: ${grandTotal}`);
+
     await browser.close();
 })();
