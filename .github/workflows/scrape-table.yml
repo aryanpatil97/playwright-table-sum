@@ -1,0 +1,23 @@
+name: Scrape Table Sums
+
+on:
+  workflow_dispatch:
+
+jobs:
+  scrape_sum:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install Playwright Dependencies
+      run: npm init -y && npm install playwright
+
+    - name: Run Scraper - 23f1000968@ds.study.iitm.ac.in
+      run: node scrape.js
