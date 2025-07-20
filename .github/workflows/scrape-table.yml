@@ -16,11 +16,11 @@ jobs:
       with:
         node-version: '20'
 
-    - name: Install Playwright Dependencies
+    - name: Install Dependencies
       run: |
         npm init -y
         npm install playwright
-        npx playwright install  # <--- ADD THIS LINE
+        npx playwright install  # Download Chromium
 
-    - name: Run Scraper - 23f1000968@ds.study.iitm.ac.in
+    - name: Run Table Sum Scraper - 23f1000968@ds.study.iitm.ac.in
       run: node scrape.js
