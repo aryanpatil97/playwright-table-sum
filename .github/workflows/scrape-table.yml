@@ -17,7 +17,10 @@ jobs:
         node-version: '20'
 
     - name: Install Playwright Dependencies
-      run: npm init -y && npm install playwright
+      run: |
+        npm init -y
+        npm install playwright
+        npx playwright install  # <--- ADD THIS LINE
 
     - name: Run Scraper - 23f1000968@ds.study.iitm.ac.in
       run: node scrape.js
